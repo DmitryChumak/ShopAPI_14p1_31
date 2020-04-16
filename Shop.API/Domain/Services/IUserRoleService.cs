@@ -10,5 +10,6 @@ namespace Shop.API.Domain.Services
         Task<UserResponse> DeleteRoleAsync(int userId, int roleId);
         Task<IEnumerable<User>> ListUsersByRoleAsync(int roleId);
         Task<UserResponse> SetUserRoleAsync(int userId, int roleId);
+        Task<IEnumerable<UserRole>> ListRolesByUserAsync(int userId);
     }
 }

@@ -38,6 +38,21 @@ namespace Shop.API.Controllers
             return result;
         }
 
+        [HttpGet]
+        [Route("getrolesbyuser/{id}")]
+        public async Task<ResponseResult> GetRolesByUser(int id)
+        {       
+            var userRoles = await userRoleService.ListRolesByUserAsync(id);
+
+            var result = new ResponseResult{
+                Success = true,
+                Message = "",
+                Data = userRoles.Select(x=>x.Role.Name)
+            };
+            return result;
+        }
+
+
 
 
         [HttpPost]

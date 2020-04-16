@@ -45,6 +45,13 @@ namespace Shop.API.Services
             return usersInRole;
         }
 
+        public async Task<IEnumerable<UserRole>> ListRolesByUserAsync(int userId)
+        {
+            var user = await userRepository.FindByIdAsync(userId);
+            var userRoles = user.UserRoles;
+            return userRoles;    
+        }
+
         public async Task<UserResponse> SetUserRoleAsync(int userId, int roleId)
         {
             try

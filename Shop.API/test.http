@@ -22,3 +22,6 @@
 DELETE http://localhost:5000/api/roles/66
 Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIlN1cGVyQWRtaW4iLCJBZG1pbiJdLCJ1bmlxdWVfbmFtZSI6Ik5hdGFsaSIsIm5iZiI6MTU4NjQyNzY5OCwiZXhwIjoxNTg2NDI5NDk4LCJpYXQiOjE1ODY0Mjc2OTh9.FmqcyzYge_5Pf_I-h0RCtX7MNKJVfrYhBg-ub6G7tQo
+
+
+GET http://localhost:5000/api/userroles/getrolesbyuser/1000
