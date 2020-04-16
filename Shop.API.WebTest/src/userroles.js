@@ -1,3 +1,4 @@
+
 function renderUsersTable(users, roles) {
     let tableRows = "";
     let token = window.localStorage.getItem('shopapicredentials');

@@ -229,49 +229,4 @@ document.addEventListener('DOMContentLoaded', function () {
     new CategoryService();
 
 
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     let url = 'http://localhost:5000/api/categories';
-
-    //     let tableResult = document.querySelector('#categoriesTable tbody');
-
-
-    //     let token = window.localStorage.getItem('shopapicredentials');
-
-    //     fetch(url, {
-    //         headers: {
-    //             'Authorization': `bearer ${token}`
-    //         }
-    //     })
-    //         .then(x => {
-    //             if (!x.ok) {
-    //                 let errorBlock = document.querySelector('#errorBlock');
-    //                 errorBlock.classList.remove('d-none');
-    //                 errorBlock.innerText = x.statusText;
-    //             } else {
-    //                 x.json()
-    //                     .then(result => {
-
-
-    //                         let resHtml = "";
-
-    //                         for (let category of result) {
-    //                             resHtml += `<tr>
-    //                             <td>${category.id}</td>
-    //                             <td>${category.name}</td>
-    //                             <td><div><img class="delBtn" src="https://img.icons8.com/plasticine/32/000000/trash--v1.png"/></div></td>
-    //                             </tr>`;
-    //                         }
-
-    //                         errorBlock.classList.add('d-none');
-
-    //                         tableResult.innerHTML = resHtml;
-    //                         tableResult.parentElement.classList.remove('d-none');
-    //                     });
-    //             }
-
-
-    //         });
-
-    // });
-
 });
