@@ -1,6 +1,4 @@
-
 class CategoryService {
-
     constructor() {
         this.url = 'http://localhost:5000/api/categories';
         this.tableResult = document.querySelector('#tableResult');
@@ -11,16 +9,11 @@ class CategoryService {
             window.localStorage.removeItem('loggedUserInfo');
             window.localStorage.removeItem('shopapicredentials');
             window.location.reload();
-
         });
-
         this.userInfo = parseJwt(this.token);
      
-
-
         document.querySelector('#userInfo').innerText = `${this.userInfo.unique_name} ${this.userInfo.role}`;
         document.querySelector('#loginArea').classList.remove('d-none');
-
 
         this.getAllCategories();
     }
@@ -34,7 +27,6 @@ class CategoryService {
     showTableData(categories) {
         let resHtml = "";
         if (this.userInfo.role.includes("Admin") || this.userInfo.role.includes("SuperAdmin")) {
-
             resHtml = `<table class="table mt-3">
         <thead>
             <tr>
@@ -44,13 +36,10 @@ class CategoryService {
                 <th>Delete</th>
             </tr>
         </thead><tbody>`;
-
             for (let category of categories) {
                 resHtml += `<tr>
             <td>
-               
                 <div class="categoryId">${category.id}</div>
-
             </td>
             <td class="editableField">
                 <div class="d-none editableForm">
@@ -60,7 +49,6 @@ class CategoryService {
                     </span>
                 </div>
                 <div class="categoryName">${category.name}</div>
-           
             </td>
             <td>  
                 <div class="editBtn">
@@ -75,7 +63,6 @@ class CategoryService {
                     <img src="https://img.icons8.com/plasticine/32/000000/trash--v1.png"/>
                 </div>
             </td>
-            
             </tr>`;
             }
         } else if (this.userInfo.role.includes("User")) {
@@ -84,7 +71,6 @@ class CategoryService {
             <tr>
                 <th scope="col">Id</th>
                 <th scope="col">Name</th>
-               
             </tr>
         </thead><tbody>`;
             for (let category of categories) {
@@ -129,13 +115,10 @@ class CategoryService {
             });
         }
 
-
         let saveButtons = document.querySelectorAll('.saveBtn');
         for (let btn of saveButtons) {
             let token = this.token;
-            btn.addEventListener('click', function (e) {
-
-
+            btn.addEventListener('click', async function (e) {
                 let tr = e.currentTarget.parentElement.parentElement;
                 let categoryName = tr.querySelectorAll('.categoryForm')[0].value;
                 let categoryId = tr.querySelectorAll('.categoryForm')[0].dataset.id;
@@ -145,24 +128,20 @@ class CategoryService {
                 let obj = {
                     "name": categoryName
                 };
-                fetch(url, {
+                let response = await fetch(url, {
                     method: 'PUT',
                     body: JSON.stringify(obj),
                     headers: {
                         'Authorization': `bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
-                })
-                    .then(x => x.json())
-                    .then(res => {
-
-                        tr.querySelectorAll('.editableField .categoryName')[0].innerText = res.name;
-
-                        tr.querySelectorAll('.editableField .editableForm')[0].classList.add('d-none');
-                        tr.querySelectorAll('.editableField .categoryName')[0].classList.remove('d-none');
-                        tr.querySelectorAll('.editBtn')[0].classList.remove('d-none');
-                        tr.querySelectorAll('.saveBtn')[0].classList.add('d-none');
-                    });
+                });
+                let responseJson = await response.json();
+                tr.querySelectorAll('.editableField .categoryName')[0].innerText = responseJson.name;
+                tr.querySelectorAll('.editableField .editableForm')[0].classList.add('d-none');
+                tr.querySelectorAll('.editableField .categoryName')[0].classList.remove('d-none');
+                tr.querySelectorAll('.editBtn')[0].classList.remove('d-none');
+                tr.querySelectorAll('.saveBtn')[0].classList.add('d-none');
 
             });
         }
@@ -179,43 +158,36 @@ class CategoryService {
                 editBtnTd.querySelectorAll('.saveBtn')[0].classList.remove('d-none');
             });
         }
-
-
     }
 
-    deleteCategory(id) {
-        fetch(`${this.url}/${id}`, {
+    async deleteCategory(id) {
+        await fetch(`${this.url}/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `bearer ${this.token}`
             }
-        })
-            .then(x => this.getAllCategories());
+        });
+        this.getAllCategories();
     }
 
-    getAllCategories() {
-        fetch(this.url, {
+    async getAllCategories() {
+        let response = await fetch(this.url, {
             headers: {
                 'Authorization': `bearer ${this.token}`
             }
-        })
-            .then(x => {
-                if (!x.ok) {
-                    this.showErrorBlock(x.statusText);
-                } else {
-                    x.json().then(result => {
-                        console.log(result);
-                        this.showTableData(result.data);
-                    });
-                }
-               
-            })
-            .catch(error => {
+        });
+        if (!response.ok) {
+                    this.showErrorBlock(response.statusText);
+        }else {
+            try{
+                let responseJson = await response.json();
+                this.showTableData(responseJson.data);
+            }catch{
                 this.showErrorBlock('Unknown error. Failed to load data');
-            });
+            }}
     }
 
-    createCategory() {
+    async createCategory() {
         let categoryName = prompt("Category name: ");
 
         if (categoryName.length > 0) {
@@ -224,29 +196,23 @@ class CategoryService {
                 "name": categoryName
             }
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `bearer ${this.token}`
-                },
-                body: JSON.stringify(obj)
-            }).then(x => {
-                if (!x.ok) {
-                    this.showErrorBlock(x.statusText);
+            let response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${this.token}`
+                    },
+                    body: JSON.stringify(obj)
+                });
+                if (!response.ok) {
+                    this.showErrorBlock(response.statusText);
                 } else {
-                    x.json().then(res => console.log(res));
+                    await response.json();
                     this.getAllCategories();
-
                 }
-            });
-        }
+            };
     }
-
-
-
 }
-
 
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
@@ -262,50 +228,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     new CategoryService();
 
-
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     let url = 'http://localhost:5000/api/categories';
-
-    //     let tableResult = document.querySelector('#categoriesTable tbody');
-
-
-    //     let token = window.localStorage.getItem('shopapicredentials');
-
-    //     fetch(url, {
-    //         headers: {
-    //             'Authorization': `bearer ${token}`
-    //         }
-    //     })
-    //         .then(x => {
-    //             if (!x.ok) {
-    //                 let errorBlock = document.querySelector('#errorBlock');
-    //                 errorBlock.classList.remove('d-none');
-    //                 errorBlock.innerText = x.statusText;
-    //             } else {
-    //                 x.json()
-    //                     .then(result => {
-
-
-    //                         let resHtml = "";
-
-    //                         for (let category of result) {
-    //                             resHtml += `<tr>
-    //                             <td>${category.id}</td>
-    //                             <td>${category.name}</td>
-    //                             <td><div><img class="delBtn" src="https://img.icons8.com/plasticine/32/000000/trash--v1.png"/></div></td>
-    //                             </tr>`;
-    //                         }
-
-    //                         errorBlock.classList.add('d-none');
-
-    //                         tableResult.innerHTML = resHtml;
-    //                         tableResult.parentElement.classList.remove('d-none');
-    //                     });
-    //             }
-
-
-    //         });
-
-    // });
 
 });

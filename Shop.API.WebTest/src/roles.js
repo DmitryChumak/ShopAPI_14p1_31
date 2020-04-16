@@ -1,12 +1,8 @@
-
-
-
 function renderRolesTable(res) {
     let tableRows = "";
 
     for (let role of res) {
-        tableRows += `
-                            <tr>
+        tableRows += `<tr>
                                 <td>${role.id}</td>
                                 <td>${role.name}</td>
                                 <td>
@@ -14,12 +10,10 @@ function renderRolesTable(res) {
                                         <img src="https://img.icons8.com/plasticine/32/000000/trash--v1.png"/>
                                     </div>
                                 </td>
-                            </tr>
-                        `;
+                            </tr>`;
     }
 
-    let tableBody = `
-                    <table class="table">
+    let tableBody = `<table class="table">
                         <thead>
                             <th>Id</th>
                             <th>Name</th>
@@ -28,81 +22,61 @@ function renderRolesTable(res) {
                         <tbody>
                             ${tableRows}
                         </tbody>
-                    </table>
-                    `;
+                    </table>`;
 
     $('#rolesTable').html(tableBody);
     $('#tableResult').removeClass('d-none');
 };
 
-
-function loadAllRoles() {
+async function loadAllRoles() {
     let url = 'http://localhost:5000/api/roles';
     let token = window.localStorage.getItem('shopapicredentials');
+    let headers = {
+        'Authorization': `bearer ${token}` 
+    }
+    let response  = await fetch(url, {
+        headers: headers
+    });
 
-    fetch(url, {
-        headers: {
-            'Authorization': `bearer ${token}`          
-        }
-    })
-        .then(x => {
-            if (!x.ok) {
-                $('#errorBlock').removeClass('d-none');
-                $('#errorBlock').html(x.statusText);
-            } else {
+    if(!response.ok){
+        $('#errorBlock').removeClass('d-none');
+        $('#errorBlock').html(response.statusText);
+    }else{
+        let responseJson = await response.json();
+        renderRolesTable(responseJson.data);
+        $('.delBtn').click(async function () {
+            let id = $(this).data('id');
+            let url = `http://localhost:5000/api/roles/${id}`;
 
-                x.json()
-                    .then(res => {
-                        renderRolesTable(res.data);
-
-                        $('.delBtn').click(function () {
-                            let id = $(this).data('id');
-                            let url = `http://localhost:5000/api/roles/${id}`;
-                            fetch(url, {
-                                method: 'DELETE'
-                            })
-                                .then(x => {
-                                    loadAllRoles();
-                                });
-                        });
-
-                    })
-            }
+            await fetch(url, {
+                method: 'DELETE'
+            });
+            loadAllRoles();
         });
+    }
 }
 
-
-function createRole() {
-    let token = window.localStorage.getItem('shopapicredentials');
+async function createRole() {
     let url = 'http://localhost:5000/api/roles';
     let newRole = {
         "name": $('#nameForm').val()
     };
-
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(newRole),
-        headers: {
-            'Authorization': `bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(x => {
-            $('#createRoleModal').modal('hide');
-            loadAllRoles();
-        });
-
+    let headers = {
+        'Content-Type': 'application/json'
+    }
+        await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(newRole),
+            headers: headers
+            });
+        $('#createRoleModal').modal('hide');
+        loadAllRoles();
 };
 
-
-
 $(document).ready(function () {
-
-
     $('#saveChangesBtn').click(function () {
         createRole();
         $('#createRoleModal input').val('');
     });
-
     loadAllRoles();
 });

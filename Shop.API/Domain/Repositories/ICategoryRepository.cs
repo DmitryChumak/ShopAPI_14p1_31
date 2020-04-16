@@ -4,14 +4,8 @@ using Shop.API.Domain.Models;
 
 namespace Shop.API.Domain.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<Category> 
     {
-         Task<IEnumerable<Category>> ListAsync();
-         Task AddAsync(Category category);
-         Task<Category> FindByIdAsync(int id);
-         void Update(Category category);
-
-         void Remove(Category category);
+        
     }
-
 }

@@ -4,13 +4,8 @@ using Shop.API.Domain.Models;
 
 namespace Shop.API.Domain.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository: IRepository<User>
     {
-         Task<IEnumerable<User>> ListAsync();
-         Task AddAsync(User user);
-         Task<User> FindByIdAsync(int id);
-         void Update(User user);
-
-         void Remove(User user);
+       
     }
 }

@@ -1,6 +1,4 @@
 
-
-
 function renderUsersTable(res) {
     let tableRows = "";
 
@@ -41,45 +39,33 @@ function renderUsersTable(res) {
     $('#tableResult').removeClass('d-none');
 };
 
-
-function loadAllUsers() {
+async function loadAllUsers() {
     let url = 'http://localhost:5000/api/users';
     let token = window.localStorage.getItem('shopapicredentials');
 
-    fetch(url, {
+    let response = await fetch(url, {
         headers: {
             'Authorization': `bearer ${token}`          
         }
-    })
-        .then(x => {
-            if (!x.ok) {
-                $('#errorBlock').removeClass('d-none');
-                $('#errorBlock').html(x.statusText);
-            } else {
-
-                x.json()
-                    .then(res => {
-                        renderUsersTable(res.data);
-
-                        $('.delBtn').click(function () {
-                            let id = $(this).data('id');
-                            let url = `http://localhost:5000/api/users/${id}`;
-                            fetch(url, {
-                                method: 'DELETE'
-                            })
-                                .then(x => {
-                                    loadAllUsers();
-                                });
-                        });
-
-                    })
-            }
+    });
+    if (!response.ok) {
+        $('#errorBlock').removeClass('d-none');
+        $('#errorBlock').html(response.statusText);
+    } else {
+        let responseJson = await response.json();
+        renderUsersTable(responseJson.data);
+        $('.delBtn').click(async function () {
+            let id = $(this).data('id');
+            let url = `http://localhost:5000/api/users/${id}`;
+            await fetch(url, {
+                        method: 'DELETE'
+                       });
+            loadAllUsers();
         });
+    }
 }
 
-
-function createUser() {
-
+async function createUser() {
     let url = 'http://localhost:5000/api/users';
     let newUser = {
         "name": $('#nameForm').val(),
@@ -89,29 +75,21 @@ function createUser() {
         "role": $('#roleForm').val()
     };
 
-    fetch(url, {
+    await fetch(url, {
         method: 'POST',
         body: JSON.stringify(newUser),
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-        .then(x => {
-            $('#createUserModal').modal('hide');
-            loadAllUsers();
-        });
-
+    });
+    $('#createUserModal').modal('hide');
+    loadAllUsers();
 };
 
-
-
 $(document).ready(function () {
-
-
     $('#saveChangesBtn').click(function () {
         createUser();
         $('#createUserModal input').val('');
     });
-
     loadAllUsers();
 });
