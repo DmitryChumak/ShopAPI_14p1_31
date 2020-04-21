@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shop.API.Domain.Repositories;
 using Shop.API.Persistence.Contexts;
+using Shop.API.Persistence.Helpers;
 
 namespace Shop.API.Persistence.Repositories
 {
@@ -27,7 +28,7 @@ namespace Shop.API.Persistence.Repositories
 
         public async Task<TEntity> FindByIdAsync(int id)
         {
-            return await dbSet.FindAsync();
+            return await dbSet.FindAsync(id);
         }
 
         public async Task<IEnumerable<TEntity>>  ListAsync()
@@ -40,6 +41,9 @@ namespace Shop.API.Persistence.Repositories
             dbSet.Update(entity);
         }
 
-       
+        public Task<PagedList<TEntity>> ListAsync(ProductParams productParams)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

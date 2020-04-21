@@ -1,0 +1,20 @@
+.dropdown-toggle, .dropdown-item{
+    cursor: pointer;
+}
+img {
+    max-height: 40px;
+    border: 2px solid white;
+    display: inline;
+    border-radius: 2px;
+}
+.dropdown-menu {
+    z-index: 9999;
+    right: 0px !important;
+    left: auto !important;
+}
+.icon {
+    max-height: 30px;
+    border: 1px solid white;
+    display: inline;
+    border-radius: 0.8em;
+}

@@ -1,0 +1,19 @@
+<div class="card mb-4 mt-3 p-1">
+  <div class="card-img-wrapper">
+    <img
+      src='../../../../assets/{{product.category.name}}.png'
+      class="card-img-top img-thumbnail"
+      alt="{{ product.category.name }}"
+    />
+  </div>
+  <div class="card-body p-2">
+    <h5 class="card-title text-center mb-1 text-success">
+       {{ product.name }}
+      <span class="text-primary text-muted">{{ product.category.name }}</span>
+    </h5>
+    <p class="card-text text-muted text-center">{{ product.goodCount }} on stock</p>
+    <button *appHasRole="['Admin','SuperAdmin']" class="btn btn-danger ml-3" (click)="deleteProduct(product.id)">
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+</div>
