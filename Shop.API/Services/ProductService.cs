@@ -5,6 +5,7 @@ using Shop.API.Domain.Models;
 using Shop.API.Domain.Services;
 using Shop.API.Domain.Repositories;
 using Shop.API.Domain.Services.Communication;
+using Shop.API.Persistence.Helpers;
 
 namespace Shop.API.Services
 {
@@ -18,9 +19,9 @@ namespace Shop.API.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Product>> ListAsync()
+        public async Task<PagedList<Product>> ListAsync(ProductParams productParams)
         {
-            return await productRepository.ListAsync();
+            return await productRepository.ListAsync(productParams);
         }
 
         public async Task<ProductResponse> DeleteAsync(int id)

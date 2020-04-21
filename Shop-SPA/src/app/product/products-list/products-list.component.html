@@ -1,0 +1,108 @@
+<div class="container text-left mt-3">
+  <div class="row justify-content-center text-center">
+    <div class="col col-lg-12 col-md-4 col-xs-4 text-left">
+      <h5>
+        <strong
+          >Total products found
+          <span class="text-success">{{ pagination.totalItems }}</span></strong
+        >
+      </h5>
+    </div>
+  </div>
+
+  <div class="row justify-content-center text-center pt-2">
+    <div class=" col-1 col-lg-1 col-md-1 col-sm-1">
+      <label class="text-success" for="itemsPerPage"
+        ><strong>On page</strong></label
+      >
+    </div>
+    <div class="col-2 col-lg-2 col-md-2 col-sm-2">
+      <select
+        class="form-control"
+        style="max-width: 90%; font-size: 14px !important; margin: 0 !important;"
+        id="itemsPerPage"
+        name="itemsPerPage"
+        [(ngModel)]="pagination.itemsPerPage"
+        (change)="loadProducts()"
+      >
+        <option *ngFor="let item of CountList" [value]="item.value"
+          >{{ item.display }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-1 col-lg-1 col-md-1 col-sm-1 text-center">
+      <label class="text-success" for="itemsPerPage"
+        ><strong>Order</strong></label
+      >
+    </div>
+    <div class="col-2 col-lg-2 col-md-2 col-sm-2">
+      <select
+        class="form-control"
+        style="max-width: 86%; margin: 0 !important;"
+        id="order"
+        name="order"
+        [(ngModel)]="order"
+        (change)="loadProducts()"
+      >
+        <option *ngFor="let order of OrderList" [value]="order.value"
+          >{{order.display}}
+        </option>
+      </select>
+    </div>
+
+    <div class=" col-2 col-lg-2 col-md-2 col-sm-2">
+      <label class="text-success" for="itemsPerPage"
+        ><strong>Category</strong></label
+      >
+    </div>
+    <div class="col-2 col-lg-2 col-md-2 col-sm-2">
+      <select
+        class="form-control"
+        style="max-width: 90%; font-size: 14px !important; margin: 0 !important;"
+        id="itemsPerPage"
+        name="itemsPerPage"
+        [(ngModel)]="categoryName"
+        (change)="loadProducts()"
+      >
+        <option *ngFor="let item of CategoryList" [value]="item.value"
+          >{{ item.display }}
+        </option>
+      </select>
+    </div>
+    <div class=" col-2 col-lg-2 col-md-2 col-sm-2">
+      <button
+              type="button"
+              class="btn btn-primary"
+              (click)="resetFilters()"
+            >
+              <i class="fa fa-refresh pr-2"></i>
+                Reset
+            </button>
+    </div>
+  </div>
+
+  <div class="container mt-3 p-0">
+    
+    <div class="row">
+      <div *ngFor="let product of products" class="col-lg-2 col-md-3 col-sm-6">
+        <app-product-card [product]="product"></app-product-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center">
+    <pagination
+      [boundaryLinks]="true"
+      [totalItems]="pagination.totalItems"
+      [itemsPerPage]="pagination.itemsPerPage"
+      [(ngModel)]="pagination.currentPage"
+      (pageChanged)="pageChanged($event)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+</div>

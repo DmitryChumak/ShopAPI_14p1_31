@@ -8,6 +8,7 @@ using Shop.API.Domain.Services;
 using Shop.API.Resources.Communication;
 using Shop.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Shop.API.Persistence.Helpers;
 
 namespace Shop.API.Controllers
 {
@@ -24,9 +25,9 @@ namespace Shop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseResult> ListAsync()
+        public async Task<ResponseResult> ListAsync([FromQuery]ProductParams productParams)
         {
-            var products = await productService.ListAsync();
+            var products = await productService.ListAsync(productParams);
             var resources = mapper.Map<IEnumerable<Product>, IEnumerable<ProductResource>>(products);
             var result = new ResponseResult
             {
@@ -34,6 +35,10 @@ namespace Shop.API.Controllers
                 Message = "",
                 Success = true
             };
+
+            Response.AddPagination(products.CurrentPage, products.PageSize,
+                products.TotalCount, products.TotalPages);
+
             return result;
         }
 
